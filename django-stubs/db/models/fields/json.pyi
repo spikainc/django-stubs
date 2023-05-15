@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, TypeVar
 
 from django.db.backends.base.base import BaseDatabaseWrapper
 from django.db.models import lookups
@@ -7,10 +7,14 @@ from django.db.models.lookups import PostgresOperatorLookup, Transform
 from django.db.models.sql.compiler import SQLCompiler
 from django.utils.functional import _StrOrPromise
 
-from . import Field
+from . import Field, _ST, _GT
 from .mixins import CheckFieldDefaultMixin
 
-class JSONField(CheckFieldDefaultMixin, Field):
+
+_A = TypeVar('_A')
+
+
+class JSONField(CheckFieldDefaultMixin, Field[_A, _A]):
     encoder: type[json.JSONEncoder] | None
     decoder: type[json.JSONDecoder] | None
     def __init__(
