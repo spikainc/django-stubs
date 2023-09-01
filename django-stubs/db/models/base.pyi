@@ -21,15 +21,20 @@ class ModelState:
 
 class ModelBase(type):
     @property
-    def objects(cls: type[_Self]) -> BaseManager[_Self]: ...  # type: ignore[misc]
-    @property
     def _default_manager(cls: type[_Self]) -> BaseManager[_Self]: ...  # type: ignore[misc]
     @property
     def _base_manager(cls: type[_Self]) -> BaseManager[_Self]: ...  # type: ignore[misc]
 
+class _ObjectsDescriptor:
+    def __get__(self,
+                instance: None,
+                owner: type[_Self]) -> BaseManager[_Self]:
+        ...
+
 class Model(metaclass=ModelBase):
     DoesNotExist: Final[type[ObjectDoesNotExist]]
     MultipleObjectsReturned: Final[type[BaseMultipleObjectsReturned]]
+    objects = _ObjectsDescriptor()
 
     class Meta: ...
     _meta: Options[Any]
